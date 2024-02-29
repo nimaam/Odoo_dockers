@@ -1,16 +1,16 @@
 version: '3.9'
 
 networks:
-  TR_NAM_Docker:
-    name: Docker_Network_Name
+  Docker_Net:
+    name: Docker_Net
     external: true
     driver: macvlan
     driver_opts:
-      parent: "enp2s0"
+      parent: "Interface"
     ipam:
       config:
-        - subnet: Docker_Network_Subnet
-          gateway: Docker_Network_Gateway
+        - subnet: Docker_Subnet
+          gateway: Docker_Gateway
 
 services:
 
