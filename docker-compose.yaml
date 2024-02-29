@@ -2,15 +2,15 @@ version: '3.9'
 
 networks:
   TR_NAM_Docker:
-    name: TR_NAM_Docker
+    name: Docker_Network_Name
     external: true
     driver: macvlan
     driver_opts:
       parent: "enp2s0"
     ipam:
       config:
-        - subnet: 192.168.120.0/24
-          gateway: 192.168.120.1
+        - subnet: Docker_Network_Subnet
+          gateway: Docker_Network_Gateway
 
 services:
 
@@ -31,6 +31,47 @@ services:
     tty: true
     networks:
       TR_NAM_Docker:
-        ipv4_address: 192.168.120.30
+        ipv4_address: IP_For_Odoo_Docker
     extra_hosts:
-      - "db:192.168.120.20"
+      - "db:IP_OF_PostgreSQL"
+
+  db-postgresql15:    
+    hostname: db-postgresql15
+    container_name: postgresql15
+    image: postgres:15.5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    networks:
+      TR_NAM_Docker:
+        ipv4_address: IP_For_PostgreSQL
+
+  pgadmin:
+    container_name: pgadmin
+    hostname: pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'EMAIL'
+      PGADMIN_DEFAULT_PASSWORD: 'PASSWORD'
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      WEBSERVER_AUTO_CREATE_USER: 'true'
+      WEBSERVER_REMOTE_USER: 'REMOTE_USER'
+      AUTHENTICATION_SOURCES: 'webserver'
+      PGADMIN_CONFIG_WTF_CSRF_CHECK_DEFAULT: 'False'
+      PGADMIN_CONFIG_WTF_CSRF_ENABLED: 'False'
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin:rw
+    ports:
+      - "80:80"
+    networks:
+      TR_NAM_Docker:
+        ipv4_address: IP_For_PgAdmin
+
