@@ -30,7 +30,7 @@ services:
       - "8072:8072" # live chat
     tty: true
     networks:
-      TR_NAM_Docker:
+      Docker_Net:
         ipv4_address: IP_For_Odoo_Docker
     extra_hosts:
       - "db:IP_OF_PostgreSQL"
@@ -49,7 +49,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      TR_NAM_Docker:
+      Docker_Net:
         ipv4_address: IP_For_PostgreSQL
 
   pgadmin:
@@ -72,6 +72,6 @@ services:
     ports:
       - "80:80"
     networks:
-      TR_NAM_Docker:
+      Docker_Net:
         ipv4_address: IP_For_PgAdmin
 
