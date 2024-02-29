@@ -1,0 +1,36 @@
+version: '3.9'
+
+networks:
+  TR_NAM_Docker:
+    name: TR_NAM_Docker
+    external: true
+    driver: macvlan
+    driver_opts:
+      parent: "enp2s0"
+    ipam:
+      config:
+        - subnet: 192.168.120.0/24
+          gateway: 192.168.120.1
+
+services:
+
+  odoo-17-hms:
+    image: odoo:17
+    container_name: odoo-17-hms
+    hostname: odoo-17-hms
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./data/odoo-data:/vacr/lib/odoo
+      - ./data/extra-addons:/mnt/extra-addons
+      - ./data/odoo.conf:/etc/odoo/odoo.conf
+    ports:
+      - "8069:8069"
+      - "8072:8072" # live chat
+    tty: true
+    networks:
+      TR_NAM_Docker:
+        ipv4_address: 192.168.120.30
+    extra_hosts:
+      - "db:192.168.120.20"
